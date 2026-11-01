@@ -130,7 +130,7 @@ public record CanonicalPaymentRequest(
 ~~~
 
 ~~~java
-public String createRequestHash(
+public String create(
         String merchantId,
         CreatePaymentRequest request,
         ObjectMapper objectMapper) {
