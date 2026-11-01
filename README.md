@@ -105,6 +105,8 @@ API
 
 The important part is that the key and business result must be persisted safely.
 
+Implementation walkthrough: [Idempotent POST APIs — Spring Boot + Oracle](idempotency/IDEMPOTENT_POST_IMPLEMENTATION.md). It covers request fingerprinting, a composite unique constraint, one-transaction persistence with Hibernate SessionFactory, duplicate replay, concurrent retries, retention, and integration-test scenarios.
+
 ## Pagination
 
 Large tables should not be returned without bounds.
@@ -141,4 +143,4 @@ A retry without a timeout can wait indefinitely. A retry without idempotency can
 
 ## Planned implementation
 
-CRUD API -> validation -> exception handling -> pagination -> OpenAPI -> idempotency -> security -> integration tests.
+CRUD API -> validation -> exception handling -> pagination -> OpenAPI -> idempotency implementation and Oracle integration tests -> security -> end-to-end tests.
