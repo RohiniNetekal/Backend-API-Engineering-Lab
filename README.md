@@ -107,6 +107,12 @@ The important part is that the key and business result must be persisted safely.
 
 Implementation walkthrough: [Idempotent POST APIs — Spring Boot + Oracle](idempotency/IDEMPOTENT_POST_IMPLEMENTATION.md). It covers request fingerprinting, a composite unique constraint, one-transaction persistence with Hibernate SessionFactory, duplicate replay, concurrent retries, retention, and integration-test scenarios.
 
+## Reliable domain-event publication
+
+Request idempotency protects a client retry from creating the same business operation twice. It does not by itself guarantee that a committed database change reaches Kafka.
+
+When an API must update Oracle and publish a domain event, use a [transactional outbox walkthrough](https://github.com/RohiniNetekal/Microservices-Engineering-Lab/blob/master/docs/transactional-outbox-pattern.md): persist the business change and outbox row in the same database transaction, then publish the committed event asynchronously. The consumer still needs idempotency because publication is at-least-once.
+
 ## Pagination
 
 Large tables should not be returned without bounds.
@@ -140,7 +146,8 @@ A retry without a timeout can wait indefinitely. A retry without idempotency can
 5. Where should business rules live?
 6. How would you design a standard error response?
 7. When should an API return 409 instead of 400?
+8. How does an outbox complement API idempotency when an operation must publish a Kafka event?
 
 ## Planned implementation
 
-CRUD API -> validation -> exception handling -> pagination -> OpenAPI -> idempotency implementation and Oracle integration tests -> security -> end-to-end tests.
+CRUD API -> validation -> exception handling -> pagination -> OpenAPI -> idempotency implementation and Oracle integration tests -> security -> end-to-end tests -> reliable domain-event publication.
