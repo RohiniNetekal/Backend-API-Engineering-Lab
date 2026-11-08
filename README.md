@@ -135,6 +135,8 @@ Production APIs commonly need:
 - Structured logging
 - Metrics and tracing
 
+For implementation details, see the [distributed tracing guide](https://github.com/RohiniNetekal/Microservices-Engineering-Lab/blob/master/docs/distributed-tracing-observability.md): use Micrometer observations for business operations, preserve W3C trace context through downstream HTTP calls, and verify Kafka propagation when an API publishes events. Trace IDs help investigation; they are not authorization credentials.
+
 A retry without a timeout can wait indefinitely. A retry without idempotency can duplicate a business operation.
 
 ## Interview questions
