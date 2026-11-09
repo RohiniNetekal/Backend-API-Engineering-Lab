@@ -113,6 +113,21 @@ Request idempotency protects a client retry from creating the same business oper
 
 When an API must update Oracle and publish a domain event, use a [transactional outbox walkthrough](https://github.com/RohiniNetekal/Microservices-Engineering-Lab/blob/master/docs/transactional-outbox-pattern.md): persist the business change and outbox row in the same database transaction, then publish the committed event asynchronously. The consumer still needs idempotency because publication is at-least-once.
 
+## Authentication and authorization
+
+A protected API should distinguish authentication (who is calling?) from authorization (what may this caller do?).
+
+For a Spring MVC API using externally issued JWT access tokens:
+- validate the token signature using trusted issuer/JWKS keys;
+- validate issuer, expiry/not-before and the API's expected audience;
+- map scopes to endpoint permissions (for example SCOPE_merchants.read);
+- return 401 for missing/invalid authentication and 403 for insufficient permission;
+- perform object-level/tenant ownership checks in the service even after scope validation.
+
+Do not trust a caller-supplied merchant ID as proof of ownership, log bearer tokens, or accept refresh tokens at ordinary business endpoints. A stateless Authorization-header API may disable CSRF only when it does not also rely on cookie/session authentication.
+
+Implementation: [Spring Security OAuth2 JWT Resource Server guide](https://github.com/RohiniNetekal/JAVA-backend-developer/blob/main/spring-security/jwt/OAUTH2_RESOURCE_SERVER_IMPLEMENTATION.md).
+
 ## Pagination
 
 Large tables should not be returned without bounds.
