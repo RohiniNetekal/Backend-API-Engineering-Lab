@@ -168,3 +168,19 @@ A retry without a timeout can wait indefinitely. A retry without idempotency can
 ## Planned implementation
 
 CRUD API -> validation -> exception handling -> pagination -> OpenAPI -> idempotency implementation and Oracle integration tests -> security -> end-to-end tests -> reliable domain-event publication.
+
+
+## CI quality gates
+
+A reliable API pipeline should verify more than compilation:
+
+- Unit-test service rules with JUnit/Mockito.
+- Run persistence integration tests against a disposable database when SQL constraints, locking or transaction behavior matters.
+- Test idempotency under concurrent duplicate requests, not only sequential calls.
+- Verify the API contract for validation errors and 401/403/404/409 responses.
+- Test real JWT signature, issuer and audience rejection separately from MockMvc's mocked JWT authorization helper.
+- If the operation publishes an event, verify the business row and outbox row commit together.
+
+Use Maven clean verify with Failsafe/Testcontainers configured for the integration-test suite. The [Java backend CI/CD guide](https://github.com/RohiniNetekal/Git-Engineering-Workflow-Lab/blob/main/docs/java-backend-ci-cd.md) explains the Maven lifecycle, GitHub Actions matrix, safe pull-request permissions and artifact promotion.
+
+A green CI result should mean the required tests actually ran; avoid hiding failures with skip-tests flags or blanket retries.
